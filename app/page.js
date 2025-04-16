@@ -1,4 +1,3 @@
-// app/page.jsx
 import Link from "next/link";
 import FilterForm from "../components/FilterForm";
 import RandomRecipeButton from "../components/RandomRecipeButton";
@@ -9,22 +8,26 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 export default async function Home({ searchParams }) {
   // Extract filters from searchParams.
   const params = await searchParams;
-  const { cuisine, meal } = params || {};
+  const { cuisine, meal, search } = params || {};
 
-  // Build a query to filter recipes using the provided cuisine and/or meal.
+  // Build a query to filter recipes using the provided filters.
   let recipeQuery = '*[_type == "recipe"';
-  if (cuisine) {
+  if (cuisine && cuisine !== "all") {
     recipeQuery += ` && cuisine == "${cuisine}"`;
   }
-  if (meal) {
+  if (meal && meal !== "all") {
     recipeQuery += ` && meal == "${meal}"`;
+  }
+  if (search) {
+    // Filters recipes using the search parameter on the recipe name.
+    recipeQuery += ` && name match "*${search}*"`;
   }
   recipeQuery += "]{name, image, cookTime, cuisine, meal, slug}";
   const recipes = await client.fetch(recipeQuery);
 
   // Fetch available options for cuisines.
   let availableCuisines;
-  if (meal) {
+  if (meal && meal !== "all") {
     availableCuisines = await client.fetch(
       '*[_type == "recipe" && meal == $meal]{cuisine}',
       { meal }
@@ -36,7 +39,7 @@ export default async function Home({ searchParams }) {
 
   // Fetch available options for meals.
   let availableMeals;
-  if (cuisine) {
+  if (cuisine && cuisine !== "all") {
     availableMeals = await client.fetch(
       '*[_type == "recipe" && cuisine == $cuisine]{meal}',
       { cuisine }
@@ -78,7 +81,7 @@ export default async function Home({ searchParams }) {
               </CardHeader>
               <CardContent>
                 <p className="text-sm">
-                  {recipe.meal} &middot; {recipe.cuisine}
+                  {recipe.cuisine} &middot; {recipe.meal}
                 </p>
                 <p className="text-sm">Cook time: {recipe.cookTime} minutes</p>
               </CardContent>

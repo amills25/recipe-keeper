@@ -48,11 +48,11 @@ export default defineType({
       type: "string",
       options: {
         list: [
-          { title: "Breakfast", value: "breakfast" },
-          { title: "Lunch", value: "lunch" },
-          { title: "Dinner", value: "dinner" },
-          { title: "Snack", value: "snack" },
-          { title: "Dessert", value: "dessert" },
+          { title: "Breakfast", value: "Breakfast" },
+          { title: "Lunch", value: "Lunch" },
+          { title: "Dinner", value: "Dinner" },
+          { title: "Snack", value: "Snack" },
+          { title: "Dessert", value: "Dessert" },
         ],
       },
     },
@@ -64,7 +64,7 @@ export default defineType({
     {
       name: "source",
       title: "Source",
-      type: "string",
+      type: "url",
     },
     {
       name: "ingredients",

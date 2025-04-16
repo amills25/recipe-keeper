@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -23,16 +24,20 @@ export default function FilterForm({
     initialCuisine ? initialCuisine : "all"
   );
   const [meal, setMeal] = useState(initialMeal ? initialMeal : "all");
+  const [search, setSearch] = useState("");
   const router = useRouter();
 
   const applyFilters = () => {
     const params = new URLSearchParams();
-    // Only add filter parameters if they aren't "all".
+    // Only add filter parameters if they aren't "all" or empty.
     if (cuisine && cuisine !== "all") {
       params.set("cuisine", cuisine);
     }
     if (meal && meal !== "all") {
       params.set("meal", meal);
+    }
+    if (search.trim() !== "") {
+      params.set("search", search.trim());
     }
     const query = params.toString();
     router.push(query ? `/?${query}` : "/");
@@ -41,12 +46,22 @@ export default function FilterForm({
   const clearFilters = () => {
     setCuisine("all");
     setMeal("all");
+    setSearch("");
     router.push("/");
   };
 
   return (
     <div className="flex flex-col space-y-4 p-4 rounded border">
-      <div className="flex space-x-4">
+      <div className="flex flex-col">
+        <Label>Search</Label>
+        <Input
+          type="text"
+          placeholder="Search recipes..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
+      <div className="flex flex-col md:flex-row space-y-4 md:space-x-4">
         <div className="flex flex-col">
           <Label>Cuisine</Label>
           <Select value={cuisine} onValueChange={setCuisine}>
@@ -55,13 +70,11 @@ export default function FilterForm({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All</SelectItem>
-              {cuisines.map(function (c) {
-                return (
-                  <SelectItem key={c} value={c}>
-                    {c}
-                  </SelectItem>
-                );
-              })}
+              {cuisines.map((c) => (
+                <SelectItem key={c} value={c}>
+                  {c}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
@@ -73,13 +86,11 @@ export default function FilterForm({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All</SelectItem>
-              {meals.map(function (m) {
-                return (
-                  <SelectItem key={m} value={m}>
-                    {m}
-                  </SelectItem>
-                );
-              })}
+              {meals.map((m) => (
+                <SelectItem key={m} value={m}>
+                  {m}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>

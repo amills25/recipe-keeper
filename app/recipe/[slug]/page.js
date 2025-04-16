@@ -55,8 +55,13 @@ export default async function RecipePage({ params }) {
         <p>
           <strong>Cook Time:</strong> {recipe.cookTime} minutes
         </p>
-        <p>Author: {recipe.author}</p>
-        <p>Source: {recipe.source}</p>
+        <p>
+          <strong>Author:</strong> {recipe.author}
+        </p>
+        <Link href={recipe.source}>
+          <strong>Source:</strong>{" "}
+          <span className="underline">{recipe.source}</span>
+        </Link>
       </div>
 
       <section className="space-y-4">
