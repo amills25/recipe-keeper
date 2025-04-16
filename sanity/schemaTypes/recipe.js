@@ -57,6 +57,16 @@ export default defineType({
       },
     },
     {
+      name: "author",
+      title: "Author",
+      type: "string",
+    },
+    {
+      name: "source",
+      title: "Source",
+      type: "string",
+    },
+    {
       name: "ingredients",
       title: "Ingredients",
       type: "array",

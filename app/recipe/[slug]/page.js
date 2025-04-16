@@ -1,7 +1,7 @@
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import Link from "next/link";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 export default async function RecipePage({ params }) {
@@ -13,6 +13,8 @@ export default async function RecipePage({ params }) {
        image,
        prepTime,
        cookTime,
+       author,
+       source,
        cuisine,
        meal,
        cookingInstructions,
@@ -53,6 +55,8 @@ export default async function RecipePage({ params }) {
         <p>
           <strong>Cook Time:</strong> {recipe.cookTime} minutes
         </p>
+        <p>Author: {recipe.author}</p>
+        <p>Source: {recipe.source}</p>
       </div>
 
       <section className="space-y-4">
