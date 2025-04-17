@@ -13,5 +13,9 @@ export default function RandomRecipeButton({ recipes }) {
     }
   };
 
-  return <Button onClick={handleRandom}>Random Recipe</Button>;
+  return (
+    <Button onClick={handleRandom} className="hover:cursor-pointer">
+      Random Recipe
+    </Button>
+  );
 }

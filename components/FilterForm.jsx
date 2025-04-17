@@ -51,7 +51,7 @@ export default function FilterForm({
   };
 
   return (
-    <div className="flex flex-col space-y-4 p-4 rounded border">
+    <div className="flex flex-col p-4 space-y-4 border rounded">
       <div className="flex flex-col">
         <Label>Search</Label>
         <Input
@@ -61,7 +61,7 @@ export default function FilterForm({
           onChange={(e) => setSearch(e.target.value)}
         />
       </div>
-      <div className="flex flex-col md:flex-row space-y-4 md:space-x-4">
+      <div className="flex flex-col space-y-4 md:flex-row md:space-x-4">
         <div className="flex flex-col">
           <Label>Cuisine</Label>
           <Select value={cuisine} onValueChange={setCuisine}>
@@ -96,8 +96,14 @@ export default function FilterForm({
         </div>
       </div>
       <div className="flex space-x-4">
-        <Button onClick={applyFilters}>Apply</Button>
-        <Button variant="destructive" onClick={clearFilters}>
+        <Button className="hover:cursor-pointer" onClick={applyFilters}>
+          Apply
+        </Button>
+        <Button
+          className="hover:cursor-pointer"
+          variant="destructive"
+          onClick={clearFilters}
+        >
           Clear Filters
         </Button>
       </div>

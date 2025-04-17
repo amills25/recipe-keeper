@@ -62,10 +62,12 @@ export default async function RecipePage({ params }) {
         <p>
           <strong>Author:</strong> {recipe.author || "Unknown"}
         </p>
-        <Link href={recipe.source}>
-          <strong>Source:</strong>{" "}
-          <span className="underline">{recipe.source}</span>
-        </Link>
+        {recipe.source && (
+          <Link href={recipe.source}>
+            <strong>Source:</strong>{" "}
+            <span className="underline">{recipe.source}</span>
+          </Link>
+        )}
       </div>
 
       <section className="space-y-4">
