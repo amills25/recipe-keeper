@@ -3,6 +3,9 @@ import { urlFor } from "@/sanity/lib/image";
 import Link from "next/link";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { PortableText } from "@portabletext/react";
+import { portableTextComponents } from "@/components/PortableTextComponents";
+import { groupListItems } from "@/utils/portableText";
 
 export default async function RecipePage({ params }) {
   const { slug } = await params;
@@ -22,6 +25,9 @@ export default async function RecipePage({ params }) {
      }`,
     { slug }
   );
+
+  const groupedIngredients = groupListItems(recipe.ingredients);
+  const groupedInstructions = groupListItems(recipe.cookingInstructions);
 
   if (!recipe) {
     return <div>Recipe not found.</div>;
@@ -56,7 +62,7 @@ export default async function RecipePage({ params }) {
           <strong>Cook Time:</strong> {recipe.cookTime} minutes
         </p>
         <p>
-          <strong>Author:</strong> {recipe.author}
+          <strong>Author:</strong> {recipe.author || "Unknown"}
         </p>
         <Link href={recipe.source}>
           <strong>Source:</strong>{" "}
@@ -66,40 +72,18 @@ export default async function RecipePage({ params }) {
 
       <section className="space-y-4">
         <h2 className="text-2xl font-semibold">Ingredients</h2>
-        <ul className="list-disc list-inside">
-          {recipe.ingredients &&
-            recipe.ingredients.map(function (block, index) {
-              return (
-                <li key={index}>
-                  {block.children
-                    ? block.children
-                        .map(function (child) {
-                          return child.text;
-                        })
-                        .join(" ")
-                    : ""}
-                </li>
-              );
-            })}
-        </ul>
+        <PortableText
+          value={groupedIngredients}
+          components={portableTextComponents}
+        />
       </section>
 
       <section className="space-y-4">
         <h2 className="text-2xl font-semibold">Cooking Instructions</h2>
-        {recipe.cookingInstructions &&
-          recipe.cookingInstructions.map(function (block, index) {
-            return (
-              <p key={index}>
-                {block.children
-                  ? block.children
-                      .map(function (child) {
-                        return child.text;
-                      })
-                      .join(" ")
-                  : ""}
-              </p>
-            );
-          })}
+        <PortableText
+          value={groupedInstructions}
+          components={portableTextComponents}
+        />
       </section>
 
       <Button asChild variant="link">
