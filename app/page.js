@@ -11,18 +11,18 @@ export default async function Home({ searchParams }) {
   const { cuisine, meal, search } = params || {};
 
   // Build a query to filter recipes using the provided filters.
-  let recipeQuery = '*[_type == "recipe"';
-  if (cuisine && cuisine !== "all") {
+  let recipeQuery = `*[_type == "recipe"`;
+  if (cuisine && cuisine !== "all")
     recipeQuery += ` && cuisine == "${cuisine}"`;
-  }
-  if (meal && meal !== "all") {
-    recipeQuery += ` && meal == "${meal}"`;
-  }
-  if (search) {
-    // Filters recipes using the search parameter on the recipe name.
-    recipeQuery += ` && name match "*${search}*"`;
-  }
-  recipeQuery += "]{name, image, cookTime, cuisine, meal, slug}";
+  if (meal && meal !== "all") recipeQuery += ` && meal == "${meal}"`;
+  if (search) recipeQuery += ` && name match "*${search}*"`;
+
+  // Add image check and sorting
+  recipeQuery += `]{
+    ...,
+    "hasImage": defined(image)  // Check if image exists
+  } | order(hasImage desc, name asc)`; // Sort by image presence first, then name
+
   const recipes = await client.fetch(recipeQuery);
 
   // Fetch available options for cuisines.
@@ -62,18 +62,18 @@ export default async function Home({ searchParams }) {
 
       <RandomRecipeButton recipes={recipes} />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         {recipes.map((recipe) => (
           <Link
             href={`/recipe/${recipe.slug.current}`}
             key={recipe.slug.current}
           >
-            <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+            <Card className="transition-shadow cursor-pointer hover:shadow-lg">
               {recipe.image && (
                 <img
                   src={urlFor(recipe.image).url()}
                   alt={recipe.name}
-                  className="w-full h-64 object-cover rounded-t"
+                  className="object-cover w-full h-64 rounded-t"
                 />
               )}
               <CardHeader>

@@ -3,9 +3,7 @@ import { urlFor } from "@/sanity/lib/image";
 import Link from "next/link";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PortableText } from "@portabletext/react";
-import { portableTextComponents } from "@/components/PortableTextComponents";
-import { groupListItems } from "@/utils/portableText";
+import { blocksToLines } from "@/utils/blocksToLines";
 
 export default async function RecipePage({ params }) {
   const { slug } = await params;
@@ -26,12 +24,12 @@ export default async function RecipePage({ params }) {
     { slug }
   );
 
-  const groupedIngredients = groupListItems(recipe.ingredients);
-  const groupedInstructions = groupListItems(recipe.cookingInstructions);
-
   if (!recipe) {
     return <div>Recipe not found.</div>;
   }
+
+  const ingredientLines = blocksToLines(recipe.ingredients);
+  const instructionLines = blocksToLines(recipe.cookingInstructions);
 
   return (
     <article className="space-y-6">
@@ -40,7 +38,7 @@ export default async function RecipePage({ params }) {
           <img
             src={urlFor(recipe.image).url()}
             alt={recipe.name}
-            className="w-full h-64 object-cover rounded-t"
+            className="object-cover w-full h-64 rounded-t"
           />
         )}
         <CardHeader>
@@ -72,18 +70,24 @@ export default async function RecipePage({ params }) {
 
       <section className="space-y-4">
         <h2 className="text-2xl font-semibold">Ingredients</h2>
-        <PortableText
-          value={groupedIngredients}
-          components={portableTextComponents}
-        />
+        <ul className="pl-6 space-y-2 list-disc">
+          {ingredientLines.map((line, index) => (
+            <li key={index} className="text-gray-700">
+              {line}
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section className="space-y-4">
         <h2 className="text-2xl font-semibold">Cooking Instructions</h2>
-        <PortableText
-          value={groupedInstructions}
-          components={portableTextComponents}
-        />
+        <ol className="pl-6 space-y-2 list-decimal">
+          {instructionLines.map((line, index) => (
+            <li key={index} className="text-gray-700">
+              {line}
+            </li>
+          ))}
+        </ol>
       </section>
 
       <Button asChild variant="link">
