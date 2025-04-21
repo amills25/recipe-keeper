@@ -1,0 +1,11 @@
+{
+  "name": "Mills Recipe Book",
+  "short_name": "RecipeBook",
+  "description": "",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#0f172a",
+  "icons": []
+}
