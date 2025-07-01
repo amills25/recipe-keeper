@@ -24,9 +24,19 @@ export default function RootLayout({ children }) {
                     Mills Recipe Book
                   </h1>
                 </div>
-                <Button asChild variant="outline" className="border-orange-300 hover:bg-orange-50">
-                  <Link href="/">🏠 Home</Link>
-                </Button>
+                <div className="flex items-center space-x-3">
+                  <Button asChild variant="outline" className="border-orange-300 hover:bg-orange-50">
+                    <Link href="/import">
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                      </svg>
+                      Import Recipe
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" className="border-orange-300 hover:bg-orange-50">
+                    <Link href="/">🏠 Home</Link>
+                  </Button>
+                </div>
               </nav>
             </div>
           </header>
