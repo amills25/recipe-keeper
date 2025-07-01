@@ -1,8 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -14,98 +12,144 @@ import {
 import { Label } from "@/components/ui/label";
 
 export default function FilterForm({
-  initialCuisine,
-  initialMeal,
+  recipes,
   cuisines,
   meals,
+  onFilterChange,
 }) {
-  // Use "all" as the sentinel value for the default option.
-  const [cuisine, setCuisine] = useState(
-    initialCuisine ? initialCuisine : "all"
-  );
-  const [meal, setMeal] = useState(initialMeal ? initialMeal : "all");
+  const [cuisine, setCuisine] = useState("all");
+  const [meal, setMeal] = useState("all");
   const [search, setSearch] = useState("");
-  const router = useRouter();
 
-  const applyFilters = () => {
-    const params = new URLSearchParams();
-    // Only add filter parameters if they aren't "all" or empty.
-    if (cuisine && cuisine !== "all") {
-      params.set("cuisine", cuisine);
+  useEffect(() => {
+    // Filter recipes based on current filters
+    let filteredRecipes = recipes;
+
+    if (cuisine !== "all") {
+      filteredRecipes = filteredRecipes.filter(
+        (recipe) => recipe.cuisine === cuisine
+      );
     }
-    if (meal && meal !== "all") {
-      params.set("meal", meal);
+
+    if (meal !== "all") {
+      filteredRecipes = filteredRecipes.filter(
+        (recipe) => recipe.meal === meal
+      );
     }
+
     if (search.trim() !== "") {
-      params.set("search", search.trim());
+      filteredRecipes = filteredRecipes.filter((recipe) =>
+        recipe.name.toLowerCase().includes(search.toLowerCase())
+      );
     }
-    const query = params.toString();
-    router.push(query ? `/?${query}` : "/");
-  };
+
+    onFilterChange(filteredRecipes);
+  }, [cuisine, meal, search, recipes, onFilterChange]);
 
   const clearFilters = () => {
     setCuisine("all");
     setMeal("all");
     setSearch("");
-    router.push("/");
   };
 
   return (
-    <div className="flex flex-col p-4 space-y-4 border rounded">
-      <div className="flex flex-col">
-        <Label>Search</Label>
-        <Input
-          type="text"
-          placeholder="Search recipes..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
-      <div className="flex flex-col space-y-4 md:flex-row md:space-x-4">
-        <div className="flex flex-col">
-          <Label>Cuisine</Label>
-          <Select value={cuisine} onValueChange={setCuisine}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="All" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              {cuisines.map((c) => (
-                <SelectItem key={c} value={c}>
-                  {c}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="flex flex-col">
-          <Label>Meal</Label>
-          <Select value={meal} onValueChange={setMeal}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="All" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              {meals.map((m) => (
-                <SelectItem key={m} value={m}>
-                  {m}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-      <div className="flex space-x-4">
-        <Button className="hover:cursor-pointer" onClick={applyFilters}>
-          Apply
-        </Button>
-        <Button
-          className="hover:cursor-pointer"
-          variant="destructive"
-          onClick={clearFilters}
+    <div className="p-8 border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
+      <div className="flex items-center mb-6 space-x-2">
+        <svg
+          className="w-6 h-6 text-orange-500"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
         >
-          Clear Filters
-        </Button>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          />
+        </svg>
+        <h2 className="text-xl font-semibold text-gray-800">
+          Find Your Perfect Recipe
+        </h2>
+      </div>
+
+      <div className="space-y-6">
+        <div className="flex flex-col">
+          <Label className="mb-2 text-sm font-medium text-gray-700">
+            Search Recipes
+          </Label>
+          <div className="relative">
+            <Input
+              type="text"
+              placeholder="Search by recipe name..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-10 border-gray-200 rounded-lg focus:border-orange-300 focus:ring-orange-200"
+            />
+            <svg
+              className="absolute w-4 h-4 text-gray-400 transform -translate-y-1/2 left-3 top-1/2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="flex flex-col">
+            <Label className="mb-2 text-sm font-medium text-gray-700">
+              Cuisine Type
+            </Label>
+            <Select value={cuisine} onValueChange={setCuisine}>
+              <SelectTrigger className="border-gray-200 rounded-lg focus:border-orange-300 focus:ring-orange-200">
+                <SelectValue placeholder="All Cuisines" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Cuisines</SelectItem>
+                {cuisines.map((c) => (
+                  <SelectItem key={c} value={c}>
+                    {c}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex flex-col">
+            <Label className="mb-2 text-sm font-medium text-gray-700">
+              Meal Type
+            </Label>
+            <Select value={meal} onValueChange={setMeal}>
+              <SelectTrigger className="border-gray-200 rounded-lg focus:border-orange-300 focus:ring-orange-200">
+                <SelectValue placeholder="All Meals" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Meals</SelectItem>
+                {meals.map((m) => (
+                  <SelectItem key={m} value={m}>
+                    {m}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div className="flex justify-end">
+          <button
+            className="px-6 py-2 text-sm font-medium text-orange-600 transition-colors duration-200 rounded-lg hover:text-orange-700 hover:bg-orange-50 hover:cursor-pointer"
+            onClick={clearFilters}
+          >
+            Clear All Filters
+          </button>
+        </div>
       </div>
     </div>
   );
